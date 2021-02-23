@@ -11,7 +11,10 @@ services:
       PGDATA: ${PGDATA}
     ports:
       - 5432:5432
-
+    
+    volumes:
+      - ./initdb_primary.sh:/docker-entrypoint-initdb.d/initdb_primary.sh
+    
   pg-secondary:
     image: postgres:13
     container_name: pg_secondary
@@ -25,4 +28,6 @@ services:
       - 5433:5432
     depends_on: 
       - pg-primary
-
+    
+    volumes:
+      - ./initdb_secondary.sh:/docker-entrypoint-initdb.d/initdb_secondary.sh
