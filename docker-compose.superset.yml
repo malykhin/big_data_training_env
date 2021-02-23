@@ -1,0 +1,15 @@
+version: "3.7"
+
+services:
+
+  superset:
+    build:
+      context: ./it/superset
+    container_name: superset
+    entrypoint:
+      "/usr/bin/entrypoint.sh"
+    ports:
+      - 8083:8080
+    volumes:
+      - "./it/superset/entrypoint.sh:/usr/bin/entrypoint.sh"
+

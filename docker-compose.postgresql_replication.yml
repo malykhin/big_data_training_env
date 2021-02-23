@@ -1,0 +1,28 @@
+version: "3.7"
+
+services:
+  pg-primary:
+    image: postgres:13
+    container_name: pg_primary
+    environment:
+      POSTGRES_USER: ${POSTGRESQL_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRESQL_PASSWORD}
+      POSTGRES_DB: ${POSTGRESQL_DATABASE}
+      PGDATA: ${PGDATA}
+    ports:
+      - 5432:5432
+
+  pg-secondary:
+    image: postgres:13
+    container_name: pg_secondary
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRESQL_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRESQL_PASSWORD}
+      POSTGRES_DB: ${POSTGRESQL_DATABASE}
+      PGDATA: ${PGDATA}
+    ports:
+      - 5433:5432
+    depends_on: 
+      - pg-primary
+

@@ -1,0 +1,116 @@
+version: "3.7"
+
+services:
+
+  namenode:
+    image: bde2020/hadoop-namenode:${HADOOP_IMAGE_VERSION}
+    container_name: namenode
+    restart: always
+    ports:
+      - 9870:9870
+      - 9000:9000
+    volumes:
+      - hadoop_namenode:/hadoop/dfs/name
+    environment:
+      - CLUSTER_NAME=test
+    env_file:
+      - ./it/hadoop/hadoop.env
+
+  datanode-1:
+    image: bde2020/hadoop-datanode:${HADOOP_IMAGE_VERSION}
+    container_name: datanode-1
+    restart: always
+    volumes:
+      - hadoop_datanode-1:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
+    env_file:
+      - ./it/hadoop/hadoop.env
+    depends_on:
+      - namenode
+
+  datanode-2:
+    image: bde2020/hadoop-datanode:${HADOOP_IMAGE_VERSION}
+    container_name: datanode-2
+    restart: always
+    volumes:
+      - hadoop_datanode-2:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
+    env_file:
+      - ./it/hadoop/hadoop.env
+    depends_on:
+      - namenode
+  
+  datanode-3:
+    image: bde2020/hadoop-datanode:${HADOOP_IMAGE_VERSION}
+    container_name: datanode-3
+    restart: always
+    volumes:
+      - hadoop_datanode-3:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
+    env_file:
+      - ./it/hadoop/hadoop.env
+    depends_on:
+      - namenode
+
+  resourcemanager:
+    image: bde2020/hadoop-resourcemanager:${HADOOP_IMAGE_VERSION}
+    container_name: resourcemanager
+    restart: always
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870 datanode-1:9864 datanode-2:9864 datanode-3:9864"
+    env_file:
+      - ./it/hadoop/hadoop.env
+    depends_on:
+      - namenode
+      - datanode-1
+      - datanode-2
+      - datanode-3
+
+  nodemanager:
+    image: bde2020/hadoop-nodemanager:${HADOOP_IMAGE_VERSION}
+    container_name: nodemanager
+    restart: always
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870 datanode-1:9864 datanode-2:9864 datanode-3:9864 resourcemanager:8088"
+    env_file:
+      - ./it/hadoop/hadoop.env
+    depends_on:
+      - namenode
+      - datanode-1
+      - datanode-2
+      - datanode-3
+  
+  historyserver:
+    image: bde2020/hadoop-historyserver:${HADOOP_IMAGE_VERSION}
+    container_name: historyserver
+    restart: always
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870 datanode-1:9864 datanode-2:9864 datanode-3:9864 resourcemanager:8088"
+    volumes:
+      - hadoop_historyserver:/hadoop/yarn/timeline
+    env_file:
+      - ./it/hadoop/hadoop.env
+    depends_on:
+      - namenode
+      - datanode-1
+      - datanode-2
+      - datanode-3
+  
+  bastion:
+    build:
+      context: ./src/hadoop/bastion
+      dockerfile: Dockerfile_bastion
+    container_name: bastion
+    volumes:
+      - ./src/hadoop:/usr/src/app
+    entrypoint: ["tail", "-f", "/dev/null"]
+
+volumes:
+  hadoop_namenode:
+  hadoop_datanode-1:
+  hadoop_datanode-2:
+  hadoop_datanode-3:
+  hadoop_historyserver:

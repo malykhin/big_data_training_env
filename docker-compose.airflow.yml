@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+
+  airflow:
+    build:
+      context: ./it/airflow
+    container_name: airflow
+    restart: always
+    volumes:
+      - ./src/airflow/dags:/usr/local/airflow/dags
+      - ./src/airflow/apps:/usr/local/apps/
+    ports:
+      - "8080:8080"
+    command: webserver
+    environment:
+      - AWS_ACCESS_KEY_ID=foo
+      - AWS_SECRET_ACCESS_KEY=bar
+      - AWS_DEFAULT_REGION=us-east-1

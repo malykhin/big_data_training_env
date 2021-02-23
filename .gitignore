@@ -1,0 +1,6 @@
+.DS_Store
+tmp*
+__pycache__
+weehive
+src/hadoop/mock*
+src/s3/mock*

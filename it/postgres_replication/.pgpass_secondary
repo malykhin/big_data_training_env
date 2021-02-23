@@ -1,0 +1,1 @@
+pg-primary:5432:replication:replicator:secret
