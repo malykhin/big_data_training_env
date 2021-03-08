@@ -5,3 +5,4 @@ weehive
 src/hadoop/mock*
 src/s3/mock*
 notes.txt
+Hive*
