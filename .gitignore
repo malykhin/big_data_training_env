@@ -5,5 +5,4 @@ weehive
 src/hadoop/mock*
 src/s3/mock*
 notes.txt
-Hive*
 src/airflow/dags/scripts/Data_DBMS_HDFS.py
