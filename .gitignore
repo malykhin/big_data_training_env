@@ -4,3 +4,5 @@ __pycache__
 weehive
 src/hadoop/mock*
 src/s3/mock*
+notes.txt
+src/airflow/dags/scripts/Data_DBMS_HDFS.py

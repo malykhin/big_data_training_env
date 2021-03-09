@@ -9,8 +9,6 @@ superset_cf			  = docker-compose.superset.yml
 
 REQUIRED_BINS := docker docker-compose python
 
-$(foreach bin,$(REQUIRED_BINS),\
-    $(if $(shell command -v $(bin) 2> /dev/null),$(info Found `$(bin)`),$(error Please install `$(bin)`)))
 
 postgres_repl:
 		docker-compose -f $(postgres_repl_cf) up -d 

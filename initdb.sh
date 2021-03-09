@@ -1,0 +1,7 @@
+psql -U postgres -c "CREATE TABLE IF NOT EXISTS user_event(user_id INT NOT NULL, time TIMESTAMP, currency_code TEXT) PARTITION BY HASH (currency_code);"
+psql -U postgres -c "CREATE TABLE IF NOT EXISTS user_event_0 PARTITION OF user_event FOR VALUES WITH (modulus 2, remainder 0);"
+psql -U postgres -c "CREATE EXTENSION IF NOT EXISTS postgres_fdw;"
+psql -U postgres -c "CREATE SERVER IF NOT EXISTS pg_2 FOREIGN DATA WRAPPER postgres_fdw OPTIONS (dbname 'postgres', host 'pg-2', port '5432');"
+psql -U postgres -c "CREATE USER MAPPING IF NOT EXISTS for "postgres" SERVER pg_2 OPTIONS (user 'postgres', password 'postgres');"
+psql -U postgres -h pg-2 -c "CREATE TABLE IF NOT EXISTS user_event_1 (user_id INT NOT NULL, time TIMESTAMP, currency_code TEXT);"
+psql -U postgres -c "CREATE FOREIGN TABLE user_event_1 PARTITION OF user_event FOR VALUES WITH (modulus 2, remainder 1) SERVER pg_2;"

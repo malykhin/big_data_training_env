@@ -104,6 +104,8 @@ services:
       context: ./src/hadoop/bastion
       dockerfile: Dockerfile_bastion
     container_name: bastion
+    env_file:
+      - ./it/hadoop/hadoop.env
     volumes:
       - ./src/hadoop:/usr/src/app
     entrypoint: ["tail", "-f", "/dev/null"]
